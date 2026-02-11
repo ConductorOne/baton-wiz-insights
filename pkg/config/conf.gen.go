@@ -4,7 +4,10 @@ package config
 import "reflect"
 
 type WizInsights struct {
-	Configfield string `mapstructure:"configField"`
+	WizApiUrl       string `mapstructure:"wiz-api-url"`
+	WizClientId     string `mapstructure:"wiz-client-id"`
+	WizClientSecret string `mapstructure:"wiz-client-secret"`
+	WizAuthEndpoint string `mapstructure:"wiz-auth-endpoint"`
 }
 
 func (c *WizInsights) findFieldByTag(tagValue string) (any, bool) {

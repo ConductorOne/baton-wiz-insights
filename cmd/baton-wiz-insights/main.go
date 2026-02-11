@@ -6,7 +6,7 @@ import (
 	"context"
 
 	"github.com/conductorone/baton-sdk/pkg/config"
-	"github.com/conductorone/baton-sdk/pkg/connectorrunner"
+	_ "github.com/conductorone/baton-sdk/pkg/connectorrunner"
 	cfg "github.com/conductorone/baton-wiz-insights/pkg/config"
 	"github.com/conductorone/baton-wiz-insights/pkg/connector"
 )
@@ -22,7 +22,5 @@ func main() {
 		version,
 		cfg.Config,
 		connector.New,
-		connectorrunner.WithDefaultCapabilitiesConnectorBuilder(&connector.Connector{}),
-		// connectorrunner.WithSessionStoreEnabled(), if the connector needs a cache.
 	)
 }
