@@ -145,7 +145,7 @@ func principalEntityFilter() map[string]interface{} {
 
 // ListIssues retrieves a paginated list of principal-related issues from Wiz.
 // Results are filtered to only issues whose related entity is a principal type
-// (USER, SERVICE_ACCOUNT, ACCESS_ROLE, ACCESS_ROLE_BINDING, IDENTITY).
+// (USER_ACCOUNT, SERVICE_ACCOUNT).
 func (c *client) ListIssues(ctx context.Context, cursor *string) (*IssueConnection, error) {
 	variables := map[string]interface{}{
 		"first":    100,
