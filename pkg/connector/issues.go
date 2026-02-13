@@ -40,21 +40,18 @@ func (i *issueBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 			resource.WithInsightObservedAt(issue.StatusChangedAt),
 		}
 
-		// Set the external resource target if we have a valid cloud platform and target ID.
-		if issue.EntitySnapshot.CloudPlatform != "" {
-			targetID := issue.EntitySnapshot.ExternalID
-			if targetID == "" {
-				targetID = issue.EntitySnapshot.ID
-			}
-			if targetID != "" {
-				insightOpts = append(insightOpts,
-					resource.WithInsightExternalResourceTarget(
-						targetID,
-						issue.EntitySnapshot.CloudPlatform,
-					),
-				)
-			}
+		// Set the external resource target. The SDK requires a target to be set.
+		// Use ExternalID if available, otherwise fall back to the entity snapshot ID.
+		targetID := issue.EntitySnapshot.ExternalID
+		if targetID == "" {
+			targetID = issue.EntitySnapshot.ID
 		}
+		insightOpts = append(insightOpts,
+			resource.WithInsightExternalResourceTarget(
+				targetID,
+				issue.EntitySnapshot.CloudPlatform,
+			),
+		)
 
 		displayName := fmt.Sprintf("[%s] %s", issue.Severity, issue.SourceRule.Name)
 
