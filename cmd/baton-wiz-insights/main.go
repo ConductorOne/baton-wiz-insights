@@ -22,7 +22,6 @@ func main() {
 		version,
 		cfg.Config,
 		connector.New,
-		connectorrunner.WithDefaultCapabilitiesConnectorBuilder(&connector.Connector{}),
-		// connectorrunner.WithSessionStoreEnabled(), if the connector needs a cache.
+		connectorrunner.WithDefaultCapabilitiesConnectorBuilderV2(&connector.Connector{}),
 	)
 }
