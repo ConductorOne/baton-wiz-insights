@@ -33,6 +33,10 @@ func decodeEventCursor(token *pagination.StreamToken, defaultStart *timestamppb.
 		if err := json.Unmarshal(data, cursor); err != nil {
 			return nil, err
 		}
+		// Guard against zero LatestSeen from old or malformed tokens.
+		if cursor.LatestSeen.IsZero() {
+			cursor.LatestSeen = cursor.Since
+		}
 		return cursor, nil
 	}
 
@@ -54,4 +58,3 @@ func (c *eventCursor) encode() (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
 }
-

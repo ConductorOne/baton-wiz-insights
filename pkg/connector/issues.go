@@ -40,23 +40,20 @@ func (i *issueBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 			resource.WithInsightObservedAt(issue.StatusChangedAt),
 		}
 
-		// Set the target based on the entity snapshot.
-		// Use external resource target since the entity is an external cloud resource.
-		if issue.EntitySnapshot.ExternalID != "" {
-			insightOpts = append(insightOpts,
-				resource.WithInsightExternalResourceTarget(
-					issue.EntitySnapshot.ExternalID,
-					issue.EntitySnapshot.CloudPlatform,
-				),
-			)
-		} else {
-			// Fallback: use the entity snapshot ID as external resource target
-			insightOpts = append(insightOpts,
-				resource.WithInsightExternalResourceTarget(
-					issue.EntitySnapshot.ID,
-					issue.EntitySnapshot.CloudPlatform,
-				),
-			)
+		// Set the external resource target if we have a valid cloud platform and target ID.
+		if issue.EntitySnapshot.CloudPlatform != "" {
+			targetID := issue.EntitySnapshot.ExternalID
+			if targetID == "" {
+				targetID = issue.EntitySnapshot.ID
+			}
+			if targetID != "" {
+				insightOpts = append(insightOpts,
+					resource.WithInsightExternalResourceTarget(
+						targetID,
+						issue.EntitySnapshot.CloudPlatform,
+					),
+				)
+			}
 		}
 
 		displayName := fmt.Sprintf("[%s] %s", issue.Severity, issue.SourceRule.Name)
@@ -74,9 +71,10 @@ func (i *issueBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 		resources = append(resources, insightResource)
 	}
 
-	// Prepare the sync results with next page token if there are more pages
+	// Prepare the sync results with next page token if there are more pages.
+	// If EndCursor is empty despite HasNextPage, stop paginating to avoid an infinite loop.
 	syncResults := &resource.SyncOpResults{}
-	if resp.PageInfo.HasNextPage {
+	if resp.PageInfo.HasNextPage && resp.PageInfo.EndCursor != "" {
 		syncResults.NextPageToken = resp.PageInfo.EndCursor
 	}
 
