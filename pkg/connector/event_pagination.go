@@ -3,6 +3,7 @@ package connector
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/conductorone/baton-sdk/pkg/pagination"
@@ -28,10 +29,10 @@ func decodeEventCursor(token *pagination.StreamToken, defaultStart *timestamppb.
 	if token != nil && token.Cursor != "" {
 		data, err := base64.StdEncoding.DecodeString(token.Cursor)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("baton-wiz-insights: decode event cursor: %w", err)
 		}
 		if err := json.Unmarshal(data, cursor); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("baton-wiz-insights: unmarshal event cursor: %w", err)
 		}
 		// Guard against zero LatestSeen from old or malformed tokens.
 		if cursor.LatestSeen.IsZero() {
@@ -54,7 +55,7 @@ func decodeEventCursor(token *pagination.StreamToken, defaultStart *timestamppb.
 func (c *eventCursor) encode() (string, error) {
 	data, err := json.Marshal(c)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("baton-wiz-insights: marshal event cursor: %w", err)
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
 }

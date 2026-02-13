@@ -2,6 +2,7 @@ package connector
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	v2 "github.com/conductorone/baton-sdk/pb/c1/connector/v2"
@@ -67,7 +68,7 @@ func (e *issuesEventFeed) ListEvents(
 	var events []*v2.Event
 	for _, issue := range issuesResp.Nodes {
 		event := v2.Event_builder{
-			Id:         issue.ID,
+			Id:         fmt.Sprintf("issue-change-%s-%s", issue.StatusChangedAt.Format(time.RFC3339Nano), issue.ID),
 			OccurredAt: timestamppb.New(issue.StatusChangedAt),
 			ResourceChangeEvent: v2.ResourceChangeEvent_builder{
 				ResourceId: v2.ResourceId_builder{
