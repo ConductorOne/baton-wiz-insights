@@ -30,7 +30,7 @@ func (i *issueBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 	// Fetch one page of issues
 	resp, err := i.client.ListIssues(ctx, cursor)
 	if err != nil {
-		return nil, nil, fmt.Errorf("wiz-connector: failed to list issues: %w", err)
+		return nil, nil, fmt.Errorf("baton-wiz-insights: failed to list issues: %w", err)
 	}
 
 	for _, issue := range resp.Nodes {
@@ -62,7 +62,7 @@ func (i *issueBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 			insightOpts...,
 		)
 		if err != nil {
-			return nil, nil, fmt.Errorf("wiz-connector: failed to create security insight resource for issue %s: %w", issue.ID, err)
+			return nil, nil, fmt.Errorf("baton-wiz-insights: failed to create security insight resource for issue %s: %w", issue.ID, err)
 		}
 
 		resources = append(resources, insightResource)

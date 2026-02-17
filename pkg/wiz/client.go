@@ -27,6 +27,8 @@ var principalEntityTypes = []string{
 type Client interface {
 	ListIssues(ctx context.Context, cursor *string) (*IssueConnection, error)
 	ListIssuesSince(ctx context.Context, since time.Time, cursor *string) (*IssueConnection, error)
+	ValidateCredentials(ctx context.Context) error
+	Close() error
 }
 
 // client implements the Client interface.
@@ -62,6 +64,27 @@ func NewClient(ctx context.Context, apiURL, clientID, clientSecret, authEndpoint
 		wrapper: wrapper,
 		apiURL:  apiURL,
 	}, nil
+}
+
+// ValidateCredentials performs a lightweight API call (fetching a single issue)
+// to verify that the configured credentials are valid.
+func (c *client) ValidateCredentials(ctx context.Context) error {
+	variables := map[string]interface{}{
+		"first":    1,
+		"filterBy": principalEntityFilter(),
+	}
+
+	var result issuesQueryResponse
+	if err := c.graphQLRequest(ctx, issuesQuery, variables, &result); err != nil {
+		return fmt.Errorf("baton-wiz-insights: failed to validate credentials: %w", err)
+	}
+
+	return nil
+}
+
+// Close releases any resources held by the client.
+func (c *client) Close() error {
+	return nil
 }
 
 // graphQLRequest makes a GraphQL request to the Wiz API using baton-sdk's HTTP wrapper.
