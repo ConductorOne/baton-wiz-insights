@@ -171,7 +171,7 @@ func principalEntityFilter() map[string]interface{} {
 // (USER_ACCOUNT, SERVICE_ACCOUNT).
 func (c *client) ListIssues(ctx context.Context, cursor *string) (*IssueConnection, error) {
 	variables := map[string]interface{}{
-		"first":    100,
+		"first":    500,
 		"filterBy": principalEntityFilter(),
 	}
 	if cursor != nil && *cursor != "" {
@@ -195,7 +195,7 @@ func (c *client) ListIssuesSince(ctx context.Context, since time.Time, cursor *s
 	}
 
 	variables := map[string]interface{}{
-		"first":    100,
+		"first":    500,
 		"filterBy": filter,
 	}
 	if cursor != nil && *cursor != "" {
