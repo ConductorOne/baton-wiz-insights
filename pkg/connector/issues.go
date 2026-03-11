@@ -40,16 +40,16 @@ func (i *issueBuilder) List(ctx context.Context, parentResourceID *v2.ResourceId
 			resource.WithInsightObservedAt(issue.StatusChangedAt),
 		}
 
-		// Set the external resource target. The SDK requires a target to be set.
+		// Target the app user (account) that the issue is about.
 		// Use ExternalID if available, otherwise fall back to the entity snapshot ID.
 		targetID := issue.EntitySnapshot.ExternalID
 		if targetID == "" {
 			targetID = issue.EntitySnapshot.ID
 		}
 		insightOpts = append(insightOpts,
-			resource.WithInsightExternalResourceTarget(
+			resource.WithInsightAppUserTarget(
+				issue.EntitySnapshot.Name,
 				targetID,
-				issue.EntitySnapshot.CloudPlatform,
 			),
 		)
 
