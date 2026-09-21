@@ -37,7 +37,7 @@ docker run --rm -v $(pwd):/out \
   -e BATON_WIZ_CLIENT_ID="your-client-id" \
   -e BATON_WIZ_CLIENT_SECRET="your-client-secret" \
   -e BATON_WIZ_AUTH_ENDPOINT="https://auth.wiz.io/oauth/token" \
-  ghcr.io/conductorone/baton-wiz-insights:latest -f "/out/sync.c1z"
+  public.ecr.aws/conductorone/baton-wiz-insights:latest -f "/out/sync.c1z"
 
 docker run --rm -v $(pwd):/out \
   ghcr.io/conductorone/baton:latest -f "/out/sync.c1z" resources
